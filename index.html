@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#1b1930" />
-  <title>ImproLab Studio</title>
+  <meta name="theme-color" content="#101522" />
+  <title>Impro Lab · Techniques d’improvisation musicale</title>
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="brand-block">
-      <img src="assets/logo.svg" alt="ImproLab Studio" style="width:64px;height:64px;display:block;margin-bottom:0.75rem;" />
+    <div>
       <p class="eyebrow">POC microlearning musical</p>
-      <h1>ImproLab Studio</h1>
-      <p class="tagline">Techniques méconnues et efficaces d'improvisation musicale, avec mise en pratique sur instrument, exemples sonores et exercices auto-corrigés.</p>
+      <h1>Impro Lab</h1>
+      <p class="tagline">Un prototype statique pensé pour GitHub Pages : techniques méconnues d’improvisation, pratique instrumentale à domicile, lecteur de séquences et exercices à correction automatique.</p>
     </div>
     <div class="stats">
       <div class="stat-card"><span class="stat-label">XP</span><strong id="xpValue">0</strong></div>
@@ -25,7 +27,7 @@
 
   <main class="layout">
     <aside class="sidebar">
-      <section class="panel accent-panel">
+      <section class="panel glassy">
         <h2>Mode</h2>
         <div class="button-row">
           <button id="freeModeBtn" class="secondary-btn">Exploration libre</button>
@@ -35,18 +37,18 @@
         <p id="pathBadge" class="badge-line">Parcours : aucun</p>
       </section>
 
-      <section class="panel">
+      <section class="panel glassy">
         <h2>Parcours</h2>
         <div id="pathwayList" class="stack"></div>
       </section>
 
-      <section class="panel">
+      <section class="panel glassy">
         <h2>Recherche</h2>
-        <input id="searchInput" type="search" placeholder="Chercher une capsule, une technique, un mot-clé..." />
-        <p class="microcopy">Exemple de POC terminé. Le même moteur peut ensuite être rechargé avec un autre domaine.</p>
+        <input id="searchInput" type="search" placeholder="Chercher une capsule, une technique, un point clé..." />
+        <p class="microcopy">Quatre parcours, cinquante ateliers, progression par stages et révision espacée générée depuis les points clés.</p>
       </section>
 
-      <section class="panel">
+      <section class="panel glassy">
         <h2>Progression du jour</h2>
         <div class="daily-grid">
           <div><span>Capsules</span><strong id="lessonsTodayValue">0</strong></div>
@@ -55,7 +57,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel glassy">
         <h2>Sauvegarde</h2>
         <div class="button-row stack-mobile">
           <button id="exportBtn" class="secondary-btn">Exporter</button>
@@ -66,36 +68,37 @@
           <button id="resetBtn" class="danger-btn">Réinitialiser</button>
         </div>
       </section>
-
-      <section class="panel">
-        <h2>Son</h2>
-        <p class="microcopy">Le moteur sonore joue des séquences de notes par synthèse légère dans le navigateur. Cliquez sur les exemples dans les capsules ou les exercices.</p>
-      </section>
     </aside>
 
     <section class="content-column">
-      <section class="hero panel">
+      <section class="hero panel hero-panel">
         <div class="hero-copy">
-          <p class="eyebrow">Produit démonstrateur</p>
-          <h2 id="heroTitle">Improviser en construisant, pas en remplissant</h2>
-          <p id="heroText">Ce POC montre comment le gabarit multi-domaine peut devenir un module complet. Ici, chaque capsule vous fait jouer sur votre instrument avant de répondre, puis réemploie les points clés en révision espacée.</p>
+          <p class="eyebrow">Prototype fini</p>
+          <h2 id="heroTitle">Improviser comme un laboratoire sonore</h2>
+          <p id="heroText">Chaque capsule propose une consigne instrumentale à tester chez soi, deux séquences exemples jouées dans le navigateur, des points clés révisables, puis des exercices auto-corrigés. Le tout reste 100 % statique et hébergeable sur GitHub Pages.</p>
         </div>
-        <div class="progress-wrap">
-          <div class="progress-bar"><div id="levelProgressBar" class="progress-fill"></div></div>
-          <p id="levelProgressText">0 / 100 XP vers le niveau suivant</p>
+        <div class="hero-side">
+          <div class="progress-wrap">
+            <div class="progress-bar"><div id="levelProgressBar" class="progress-fill"></div></div>
+            <p id="levelProgressText">0 / 100 XP vers le niveau suivant</p>
+          </div>
+          <div class="midi-box">
+            <p class="midi-label">Lecteur intégré</p>
+            <p class="microcopy">Les exemples sont joués par synthèse locale dans le navigateur. Aucun backend ni fichier audio externe n’est nécessaire.</p>
+          </div>
         </div>
       </section>
 
-      <section id="lessonCatalogSection" class="panel">
+      <section id="lessonCatalogSection" class="panel glassy">
         <div class="section-head">
-          <h2>Capsules</h2>
+          <h2>Ateliers</h2>
           <p id="currentStageLabel" class="section-meta">Étape : découverte</p>
         </div>
-        <p id="currentStageDescription" class="microcopy">En parcours guidé, les capsules se débloquent progressivement.</p>
+        <p id="currentStageDescription" class="microcopy">Le parcours guidé débloque les ateliers dans l’ordre prévu pour chaque famille de techniques.</p>
         <div id="lessonList" class="lesson-grid"></div>
       </section>
 
-      <section id="lessonPlayer" class="panel hidden">
+      <section id="lessonPlayer" class="panel glassy hidden">
         <div class="section-head">
           <div>
             <p id="lessonMeta" class="section-meta"></p>
@@ -110,23 +113,23 @@
       </section>
 
       <section class="dual-grid">
-        <section class="panel">
+        <section class="panel glassy">
           <div class="section-head">
             <h2>Révision espacée</h2>
             <button id="startReviewBtn">Lancer</button>
           </div>
           <div id="reviewArea" class="session-box">
-            <p>Les cartes de révision sont générées automatiquement à partir des points clés de chaque capsule validée.</p>
+            <p>Chaque point clé mémorable devient une carte à revoir. Le système reste volontairement simple pour démontrer le potentiel du produit final.</p>
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel glassy">
           <div class="section-head">
             <h2>Exercice rapide</h2>
             <button id="startQuizBtn">Lancer</button>
           </div>
           <div id="quizArea" class="session-box">
-            <p>Le moteur puise dans les exercices du parcours actif. Chaque énoncé demande d'abord une mise en pratique instrumentale, puis une réponse à correction automatique.</p>
+            <p>Le moteur tire un exercice dans le périmètre actif. Les types utilisés ici sont QCU, QCM, vrai/faux, texte court, appariement et remise en ordre.</p>
           </div>
         </section>
       </section>
