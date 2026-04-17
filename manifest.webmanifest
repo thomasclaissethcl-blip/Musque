@@ -1,0 +1,9 @@
+{
+  "name": "ImproLab Studio",
+  "short_name": "ImproLab",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#141320",
+  "theme_color": "#1b1930",
+  "icons": []
+}
