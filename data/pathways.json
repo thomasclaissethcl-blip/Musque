@@ -1,1 +1,33 @@
-
+{
+  "pathways": [
+    {
+      "id": "motifs-cells",
+      "title": "Motifs et cellules",
+      "description": "Développer peu de matière de façon musicale : répétition variée, déplacement, inversion, réduction et extension.",
+      "hero": "Transformer une petite idée en discours cohérent.",
+      "color": "ambre",
+      "lessonCount": 13
+    },
+    {
+      "id": "rhythm-flow",
+      "title": "Rythme et débit",
+      "description": "Travailler les silences, décalages, densités et placements pour improviser avec plus de relief sans jouer plus de notes.",
+      "hero": "Faire respirer le temps et créer de la tension rythmique.",
+      "lessonCount": 13
+    },
+    {
+      "id": "harmony-color",
+      "title": "Harmonie et couleurs",
+      "description": "Faire entendre des couleurs en restant simple : notes cibles, tensions choisies, pédales, superpositions et points d'appui.",
+      "hero": "Colorer l'harmonie sans surcharger le discours.",
+      "lessonCount": 13
+    },
+    {
+      "id": "interaction-story",
+      "title": "Interaction et narration",
+      "description": "Improviser comme une forme qui avance : questions-réponses, contrastes, appels, réponses, énergie et respiration.",
+      "hero": "Construire un récit et dialoguer avec l'accompagnement.",
+      "lessonCount": 13
+    }
+  ]
+}
