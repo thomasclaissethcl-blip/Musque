@@ -1,226 +1,194 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#171226" />
+  <meta name="theme-color" content="#0f1020" />
   <title>Impro Lab — improvisation musicale</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell improv-theme">
+  <div class="app-shell">
     <header class="topbar">
       <div class="brand-wrap">
         <div class="brand-mark">IL</div>
         <div>
           <h1 class="brand-title">Impro Lab</h1>
-          <p class="subtitle">Un atelier statique prêt pour GitHub Pages, centré sur la pratique instrumentale, la progression guidée et les supports sonores intégrés.</p>
+          <p class="subtitle">Travaillez des techniques d’improvisation chez vous, avec parcours guidés, atelier immersif et supports sonores intégrés.</p>
         </div>
       </div>
 
       <nav class="topbar-actions" aria-label="Navigation principale">
-        <button id="homeViewBtn" class="icon-btn nav-btn active" type="button" aria-label="Continuer">
+        <button id="homeBtn" class="icon-btn active" type="button" aria-label="Accueil" title="Accueil">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 10.2V21h6v-6h6v6h6V10.2Z"></path></svg>
         </button>
-        <button id="exploreViewBtn" class="icon-btn nav-btn" type="button" aria-label="Explorer">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 8 4v6c0 5-3.4 9.7-8 11-4.6-1.3-8-6-8-11V6l8-4Zm0 4.1L7 8.4v3.5c0 3.6 2.2 7 5 8 2.8-1 5-4.4 5-8V8.4Z"></path></svg>
+        <button id="challengeBtn" class="icon-btn" type="button" aria-label="Défi du jour" title="Défi du jour">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 6 14h5l-1 8 8-12h-5l0-8Z"></path></svg>
         </button>
-        <button id="profileModalBtn" class="icon-btn" type="button" aria-label="Tableau de bord">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-4.14 0-7.5 2.69-7.5 6v.75h15v-.75c0-3.31-3.36-6-7.5-6Z"></path></svg>
+        <button id="progressBtn" class="icon-btn" type="button" aria-label="Progression" title="Progression">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h3v14H5zm5 5h3v9h-3zm5-4h3v13h-3z"></path></svg>
         </button>
-        <button id="settingsModalBtn" class="icon-btn" type="button" aria-label="Réglages">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m19.14 12.94.86-.5a1 1 0 0 0 .37-1.36l-1.12-1.94a1 1 0 0 0-1.31-.43l-.87.39a7.56 7.56 0 0 0-1.62-.94l-.13-.95A1 1 0 0 0 14.33 6h-2.24a1 1 0 0 0-.99.84l-.13.95a7.56 7.56 0 0 0-1.62.94l-.87-.39a1 1 0 0 0-1.31.43L6.05 10.7a1 1 0 0 0 .37 1.36l.86.5a7.9 7.9 0 0 0 0 1.88l-.86.5a1 1 0 0 0-.37 1.36l1.12 1.94a1 1 0 0 0 1.31.43l.87-.39a7.56 7.56 0 0 0 1.62.94l.13.95a1 1 0 0 0 .99.84h2.24a1 1 0 0 0 .99-.84l.13-.95a7.56 7.56 0 0 0 1.62-.94l.87.39a1 1 0 0 0 1.31-.43l1.12-1.94a1 1 0 0 0-.37-1.36l-.86-.5a7.9 7.9 0 0 0 0-1.88ZM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5Z"></path></svg>
-        </button>
-        <button id="saveModalBtn" class="icon-btn" type="button" aria-label="Sauvegarde">
+        <button id="dataBtn" class="icon-btn" type="button" aria-label="Données" title="Données">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h10l5 5v13H3V3h3Zm1.5 2v4h8V5Zm0 8v6h9v-6Zm7-8v2h2.5Z"></path></svg>
         </button>
       </nav>
     </header>
 
-    <main class="layout immersive-layout">
-      <aside class="sidebar music-sidebar">
-        <section class="card session-card pulse-card">
-          <p class="eyebrow">Continuer</p>
-          <h2 id="continueTitle">Votre prochaine séance</h2>
-          <p id="continueText">Sélectionnez un parcours, puis lancez l’atelier conseillé.</p>
-          <div class="cta-stack">
-            <button id="continueBtn">Continuer</button>
-            <button id="goExploreBtn" class="secondary-btn">Explorer les parcours</button>
+    <main class="main-layout">
+      <section class="hero card">
+        <div>
+          <p class="eyebrow">Commencer simplement</p>
+          <h2>Entrez par l’action, pas par les explications</h2>
+          <p class="microcopy">Choisissez un parcours, lancez l’atelier conseillé, jouez sur votre instrument, puis utilisez le test automatique pour fixer ce que vous venez d’entendre et de faire.</p>
+        </div>
+        <div class="hero-side">
+          <div class="stats-inline">
+            <div><span>XP</span><strong id="xpValue">0</strong></div>
+            <div><span>Niveau</span><strong id="levelValue">1</strong></div>
+            <div><span>Série</span><strong id="streakValue">0</strong></div>
           </div>
-        </section>
+          <div class="progress-wrap">
+            <div class="progress-label"><span>Progression niveau</span><span id="levelProgressText">0 / 120 XP</span></div>
+            <div class="progress-bar"><div id="levelProgressBar" class="progress-fill"></div></div>
+          </div>
+        </div>
+      </section>
 
-        <section class="card entry-points-card">
-          <div class="section-head section-head-tight"><h2>Entrées rapides</h2></div>
-          <div class="entry-grid">
-            <button id="reviewShortcutBtn" class="quick-action-card secondary-btn" type="button">
-              <strong>Réviser</strong>
-              <span>Ouvrir une carte et relancer l’oreille.</span>
+      <section class="control-strip card">
+        <div class="field-group">
+          <label for="pathwaySelect">Parcours</label>
+          <select id="pathwaySelect">
+            <option value="all">À la carte</option>
+          </select>
+        </div>
+        <div class="field-group wide">
+          <label for="searchInput">Rechercher un atelier</label>
+          <input id="searchInput" type="search" placeholder="Motif, tension, silence, interaction, etc." />
+        </div>
+        <div class="field-group short-info">
+          <span class="info-label">Parcours choisi</span>
+          <strong id="selectedPathwayTitle">À la carte</strong>
+          <span id="selectedPathwayDescription" class="muted-text">Vous pouvez ouvrir n’importe quel atelier.</span>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <aside class="left-column">
+          <section class="card continue-card">
+            <p class="eyebrow">Continuer</p>
+            <h2 id="continueTitle">Votre prochaine séance</h2>
+            <p id="continueText">Sélectionnez un parcours pour afficher une progression guidée.</p>
+            <div id="continueCardBody"></div>
+            <button id="continueBtn" class="primary-btn">Continuer</button>
+          </section>
+
+          <section class="card challenge-card">
+            <button id="challengeToggle" class="section-toggle" type="button" aria-expanded="false">
+              <span>Défi du jour</span>
+              <span class="toggle-indicator">+</span>
             </button>
-            <button id="quizShortcutBtn" class="quick-action-card secondary-btn" type="button">
-              <strong>Test rapide</strong>
-              <span>Mettre des mots sur un geste déjà pratiqué.</span>
-            </button>
-          </div>
-        </section>
-
-        <section class="card stage-panel">
-          <div class="section-head section-head-tight">
-            <h2>Étape courante</h2>
-            <span id="pathwayInlineBadge" class="pill muted">Mode parcours</span>
-          </div>
-          <div id="currentStageCard" class="stage-card improv-stage-card">
-            <strong id="currentStageLabel">Découverte</strong>
-            <p id="currentStageDescription">Vous avancez atelier par atelier dans le parcours actif.</p>
-          </div>
-        </section>
-
-        <section class="card compact-pathway-panel">
-          <div class="section-head section-head-tight">
-            <h2>Parcours actifs</h2>
-          </div>
-          <div id="pathwayList" class="pathway-list"></div>
-        </section>
-      </aside>
-
-      <section class="main-column">
-        <section id="homeView" class="view-panel">
-          <section class="hero-strip card improv-hero">
-            <div>
-              <p class="eyebrow">Parcours utilisateur</p>
-              <h2>Jouer, entendre, comprendre, ancrer</h2>
-              <p class="microcopy">L’application vous fait entrer par une action simple : reprendre la prochaine séance. Les détails pédagogiques arrivent dans l’atelier, au moment où ils deviennent utiles.</p>
-            </div>
-            <div class="hero-strip-side">
-              <div class="progress-wrap compact-progress">
-                <div class="progress-label">
-                  <span>Progression niveau</span>
-                  <span id="levelProgressText">0 / 120 XP</span>
-                </div>
-                <div class="progress-bar"><div id="levelProgressBar" class="progress-fill"></div></div>
-              </div>
-              <div class="session-stats-row">
-                <div class="daily-box"><span>Ateliers</span><strong id="lessonsTodayValue">0</strong></div>
-                <div class="daily-box"><span>Révisions</span><strong id="reviewsTodayValue">0</strong></div>
-                <div class="daily-box"><span>Tests</span><strong id="quizTodayValue">0</strong></div>
-              </div>
-            </div>
+            <div id="challengePanel" class="collapsible hidden"></div>
           </section>
+        </aside>
 
-          <section class="card continue-focus">
-            <div class="section-head"><h2>Prochaine séance recommandée</h2><span id="modeBadge" class="pill">Mode parcours</span></div>
-            <div id="continueWorkshopCard"></div>
+        <section class="right-column">
+          <section class="card catalog-card">
+            <div class="section-head">
+              <h2>Ateliers</h2>
+              <span id="catalogMeta" class="pill">0 atelier</span>
+            </div>
+            <div id="lessonList" class="lesson-list"></div>
           </section>
         </section>
-
-        <section id="exploreView" class="view-panel hidden">
-          <section class="card catalog-toolbar">
-            <div class="section-head stacked-mobile">
-              <div>
-                <p class="eyebrow">Explorer</p>
-                <h2>Parcours et ateliers</h2>
-              </div>
-              <input id="searchInput" type="search" placeholder="Rechercher un atelier, un geste, une idée" />
-            </div>
-            <div class="explore-switch">
-              <button id="freeModeBtn" class="mode-btn">Exploration libre</button>
-              <button id="pathModeBtn" class="mode-btn active">Parcours guidé</button>
-            </div>
-          </section>
-
-          <section id="pathwayShowcase" class="card pathway-showcase"></section>
-          <section id="lessonCatalogSection" class="card">
-            <div class="section-head"><h2>Ateliers disponibles</h2><span id="pathBadge" class="pill muted">Aucun parcours</span></div>
-            <div id="lessonList" class="lesson-grid"></div>
-          </section>
-        </section>
-
-        <section id="lessonPlayer" class="card hidden workshop-player"></section>
       </section>
     </main>
   </div>
 
-  <div id="profileModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
-    <div class="modal-backdrop" data-close-modal="profile"></div>
+  <div id="lessonModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="lessonModalTitle">
+    <div class="modal-dialog modal-fullscreen workshop-modal">
+      <div class="modal-header sticky-header">
+        <div>
+          <p id="lessonModalMeta" class="eyebrow">Atelier</p>
+          <h2 id="lessonModalTitle">Atelier</h2>
+        </div>
+        <div class="header-actions">
+          <button id="prevLessonBtn" class="secondary-btn" type="button">Précédent</button>
+          <button id="nextLessonBtn" class="secondary-btn" type="button">Suivant</button>
+          <button id="closeLessonBtn" class="secondary-btn" type="button">Fermer</button>
+        </div>
+      </div>
+      <div id="lessonModalBody" class="modal-body workshop-body"></div>
+    </div>
+  </div>
+
+  <div id="progressModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="progressModalTitle">
+    <div class="modal-backdrop" data-close-modal="progress"></div>
     <div class="modal-dialog modal-dialog-large">
       <div class="modal-header">
-        <h2 id="profileModalTitle">Tableau de bord de pratique</h2>
-        <button id="closeProfileModalBtn" class="secondary-btn modal-close" aria-label="Fermer">Fermer</button>
+        <h2 id="progressModalTitle">Progression</h2>
+        <button id="closeProgressModalBtn" class="secondary-btn" type="button">Fermer</button>
       </div>
       <div class="modal-body modal-grid">
         <section class="modal-card">
           <h3>Profil</h3>
           <div class="stats-grid">
-            <div class="stat"><span class="label">XP</span><strong id="xpValue">0</strong></div>
-            <div class="stat"><span class="label">Niveau</span><strong id="levelValue">1</strong></div>
-            <div class="stat"><span class="label">Série</span><strong id="streakValue">0</strong></div>
-          </div>
-        </section>
-        <section class="modal-card hero-card">
-          <div>
-            <h3 id="heroTitle">Votre tableau de bord</h3>
-            <p id="heroText">Reprenez une séance, révisez un point clé ou lancez un test pour ancrer une sensation musicale déjà vécue.</p>
+            <div class="stat"><span class="label">XP</span><strong id="progressXpValue">0</strong></div>
+            <div class="stat"><span class="label">Niveau</span><strong id="progressLevelValue">1</strong></div>
+            <div class="stat"><span class="label">Série</span><strong id="progressStreakValue">0</strong></div>
           </div>
         </section>
         <section class="modal-card">
-          <div class="section-head"><h3>Objectif du jour</h3><span id="dailyGoalText">1 séance + 1 révision + 1 test</span></div>
+          <h3>Aujourd’hui</h3>
           <div class="daily-grid">
-            <div class="daily-box"><span>Ateliers</span><strong id="lessonsTodayDashboard">0</strong></div>
-            <div class="daily-box"><span>Révisions</span><strong id="reviewsTodayDashboard">0</strong></div>
-            <div class="daily-box"><span>Exercices</span><strong id="quizTodayDashboard">0</strong></div>
+            <div class="daily-box"><span>Ateliers</span><strong id="lessonsTodayValue">0</strong></div>
+            <div class="daily-box"><span>Révisions</span><strong id="reviewsTodayValue">0</strong></div>
+            <div class="daily-box"><span>Tests</span><strong id="quizTodayValue">0</strong></div>
           </div>
         </section>
         <section class="modal-card">
-          <div class="section-head"><h3>Révision espacée</h3><button id="startReviewBtn">Lancer une révision</button></div>
-          <div id="reviewArea" class="session-box"><p>Les cartes issues des points clés validés apparaissent ici.</p></div>
+          <div class="section-head"><h3>Révision espacée</h3><button id="startReviewBtn" class="primary-btn" type="button">Lancer</button></div>
+          <div id="reviewArea" class="session-box"><p>Les cartes dues apparaissent ici.</p></div>
         </section>
         <section class="modal-card">
-          <div class="section-head"><h3>Test rapide</h3><button id="startQuizBtn">Lancer un test</button></div>
-          <div id="quizArea" class="session-box"><p>Le test rapide pioche un exercice dans le périmètre courant.</p></div>
+          <div class="section-head"><h3>Par parcours</h3></div>
+          <div id="pathwayProgressList" class="pathway-progress-list"></div>
         </section>
       </div>
     </div>
   </div>
 
-  <div id="settingsModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
-    <div class="modal-backdrop" data-close-modal="settings"></div>
-    <div class="modal-dialog">
+  <div id="challengeModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="challengeModalTitle">
+    <div class="modal-backdrop" data-close-modal="challenge"></div>
+    <div class="modal-dialog modal-dialog-large">
       <div class="modal-header">
-        <h2 id="settingsModalTitle">Réglages de pratique</h2>
-        <button id="closeSettingsModalBtn" class="secondary-btn modal-close" aria-label="Fermer">Fermer</button>
+        <h2 id="challengeModalTitle">Défi du jour</h2>
+        <button id="closeChallengeModalBtn" class="secondary-btn" type="button">Fermer</button>
       </div>
       <div class="modal-body">
-        <section class="modal-card">
-          <h3>Logique d’usage</h3>
-          <p class="small-text">L’accueil pousse vers la prochaine séance. Explorer sert à choisir ou changer de parcours. Le tableau de bord regroupe révision, test rapide et suivi quotidien pour ne pas surcharger la page principale.</p>
-        </section>
-        <section class="modal-card">
-          <h3>Supports sonores</h3>
-          <p class="small-text">Chaque atelier peut proposer un exemple, un drone, une suite d’accords ou une boucle de pulsation. Le tempo est réglable à la volée. Les supports sont pensés pour la pratique instrumentale à domicile, pas comme décor sonore.</p>
-        </section>
+        <div id="challengeModalBody"></div>
       </div>
     </div>
   </div>
 
-  <div id="saveModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle">
-    <div class="modal-backdrop" data-close-modal="save"></div>
-    <div class="modal-dialog">
+  <div id="dataModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dataModalTitle">
+    <div class="modal-backdrop" data-close-modal="data"></div>
+    <div class="modal-dialog modal-dialog-medium">
       <div class="modal-header">
-        <h2 id="saveModalTitle">Sauvegarde</h2>
-        <button id="closeSaveModalBtn" class="secondary-btn modal-close" aria-label="Fermer">Fermer</button>
+        <h2 id="dataModalTitle">Données</h2>
+        <button id="closeDataModalBtn" class="secondary-btn" type="button">Fermer</button>
       </div>
-      <div class="modal-body">
-        <section class="modal-card">
-          <div class="stack-actions">
-            <button id="exportBtn">Exporter la progression</button>
-            <label class="file-input-label">Importer une progression<input id="importInput" type="file" accept="application/json" /></label>
-            <button id="resetBtn" class="secondary-btn danger-btn">Réinitialiser</button>
-          </div>
-        </section>
+      <div class="modal-body stacked-panel">
+        <button id="exportBtn" class="primary-btn" type="button">Exporter ma progression</button>
+        <label class="file-input-wrap">Importer une progression
+          <input id="importInput" type="file" accept="application/json" />
+        </label>
+        <button id="resetBtn" class="danger-btn" type="button">Réinitialiser la progression locale</button>
       </div>
     </div>
   </div>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
   <script type="module" src="./js/app.js"></script>
 </body>
