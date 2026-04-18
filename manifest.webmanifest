@@ -1,9 +1,9 @@
 {
-  "name": "Microlearning Studio Template",
-  "short_name": "Microlearning",
+  "name": "Impro Lab — improvisation musicale",
+  "short_name": "Impro Lab",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f3f4f6",
-  "theme_color": "#1f2937",
+  "background_color": "#0d0b14",
+  "theme_color": "#171226",
   "icons": []
 }
