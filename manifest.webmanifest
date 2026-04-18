@@ -1,9 +1,9 @@
 {
-  "name": "Impro Lab",
-  "short_name": "Impro Lab",
-  "start_url": "./",
+  "name": "Microlearning Studio Template",
+  "short_name": "Microlearning",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0b1020",
-  "theme_color": "#101522",
-  "description": "POC statique de microlearning sur les techniques d’improvisation musicale."
+  "background_color": "#f3f4f6",
+  "theme_color": "#1f2937",
+  "icons": []
 }

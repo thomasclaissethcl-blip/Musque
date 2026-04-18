@@ -3,138 +3,240 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#101522" />
-  <title>Impro Lab · Techniques d’improvisation musicale</title>
+  <meta name="theme-color" content="#1f2937" />
+  <title>Microlearning Studio Template</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div>
-      <p class="eyebrow">POC microlearning musical</p>
-      <h1>Impro Lab</h1>
-      <p class="tagline">Un prototype statique pensé pour GitHub Pages : techniques méconnues d’improvisation, pratique instrumentale à domicile, lecteur de séquences et exercices à correction automatique.</p>
-    </div>
-    <div class="stats">
-      <div class="stat-card"><span class="stat-label">XP</span><strong id="xpValue">0</strong></div>
-      <div class="stat-card"><span class="stat-label">Niveau</span><strong id="levelValue">1</strong></div>
-      <div class="stat-card"><span class="stat-label">Série</span><strong id="streakValue">0</strong></div>
-    </div>
-  </header>
-
-  <main class="layout">
-    <aside class="sidebar">
-      <section class="panel glassy">
-        <h2>Mode</h2>
-        <div class="button-row">
-          <button id="freeModeBtn" class="secondary-btn">Exploration libre</button>
-          <button id="pathModeBtn" class="secondary-btn">Parcours guidé</button>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-wrap">
+        <div>
+          <h1 class="brand-title">Microlearning Studio</h1>
+          <p class="subtitle">Gabarit multi-domaine avec navigation recentrée, modals de pilotage et surface principale dédiée au parcours.</p>
         </div>
-        <p id="modeBadge" class="badge-line">Mode actuel : libre</p>
-        <p id="pathBadge" class="badge-line">Parcours : aucun</p>
-      </section>
+      </div>
 
-      <section class="panel glassy">
-        <h2>Parcours</h2>
-        <div id="pathwayList" class="stack"></div>
-      </section>
+      <div class="topbar-actions">
+        <button id="profileModalBtn" class="icon-btn icon-profile" type="button" aria-label="Ouvrir le tableau de bord">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-4.14 0-7.5 2.69-7.5 6v.75h15v-.75c0-3.31-3.36-6-7.5-6Z"></path>
+          </svg>
+        </button>
 
-      <section class="panel glassy">
-        <h2>Recherche</h2>
-        <input id="searchInput" type="search" placeholder="Chercher une capsule, une technique, un point clé..." />
-        <p class="microcopy">Quatre parcours, cinquante ateliers, progression par stages et révision espacée générée depuis les points clés.</p>
-      </section>
+        <button id="settingsModalBtn" class="icon-btn" type="button" aria-label="Ouvrir les réglages d’apprentissage">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m19.14 12.94.86-.5a1 1 0 0 0 .37-1.36l-1.12-1.94a1 1 0 0 0-1.31-.43l-.87.39a7.56 7.56 0 0 0-1.62-.94l-.13-.95A1 1 0 0 0 14.33 6h-2.24a1 1 0 0 0-.99.84l-.13.95a7.56 7.56 0 0 0-1.62.94l-.87-.39a1 1 0 0 0-1.31.43L6.05 10.7a1 1 0 0 0 .37 1.36l.86.5a7.9 7.9 0 0 0 0 1.88l-.86.5a1 1 0 0 0-.37 1.36l1.12 1.94a1 1 0 0 0 1.31.43l.87-.39a7.56 7.56 0 0 0 1.62.94l.13.95a1 1 0 0 0 .99.84h2.24a1 1 0 0 0 .99-.84l.13-.95a7.56 7.56 0 0 0 1.62-.94l.87.39a1 1 0 0 0 1.31-.43l1.12-1.94a1 1 0 0 0-.37-1.36l-.86-.5a7.9 7.9 0 0 0 0-1.88ZM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5Z"></path>
+          </svg>
+        </button>
 
-      <section class="panel glassy">
-        <h2>Progression du jour</h2>
-        <div class="daily-grid">
-          <div><span>Capsules</span><strong id="lessonsTodayValue">0</strong></div>
-          <div><span>Révisions</span><strong id="reviewsTodayValue">0</strong></div>
-          <div><span>Exercices</span><strong id="quizTodayValue">0</strong></div>
-        </div>
-      </section>
+        <button id="saveModalBtn" class="icon-btn" type="button" aria-label="Ouvrir la sauvegarde">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 3h10l5 5v13H3V3h3Zm1.5 2v4h8V5Zm0 8v6h9v-6Zm7-8v2h2.5Z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
 
-      <section class="panel glassy">
-        <h2>Sauvegarde</h2>
-        <div class="button-row stack-mobile">
-          <button id="exportBtn" class="secondary-btn">Exporter</button>
-          <label class="file-button secondary-btn">
-            Importer
-            <input id="importInput" type="file" accept="application/json" hidden />
-          </label>
-          <button id="resetBtn" class="danger-btn">Réinitialiser</button>
-        </div>
-      </section>
-    </aside>
-
-    <section class="content-column">
-      <section class="hero panel hero-panel">
-        <div class="hero-copy">
-          <p class="eyebrow">Prototype fini</p>
-          <h2 id="heroTitle">Improviser comme un laboratoire sonore</h2>
-          <p id="heroText">Chaque capsule propose une consigne instrumentale à tester chez soi, deux séquences exemples jouées dans le navigateur, des points clés révisables, puis des exercices auto-corrigés. Le tout reste 100 % statique et hébergeable sur GitHub Pages.</p>
-        </div>
-        <div class="hero-side">
-          <div class="progress-wrap">
-            <div class="progress-bar"><div id="levelProgressBar" class="progress-fill"></div></div>
-            <p id="levelProgressText">0 / 100 XP vers le niveau suivant</p>
+    <main class="layout">
+      <aside class="sidebar">
+        <section class="card stage-panel">
+          <div class="section-head section-head-tight">
+            <h2>Étape actuelle</h2>
+            <span id="pathwayInlineBadge" class="pill muted">Mode libre</span>
           </div>
-          <div class="midi-box">
-            <p class="midi-label">Lecteur intégré</p>
-            <p class="microcopy">Les exemples sont joués par synthèse locale dans le navigateur. Aucun backend ni fichier audio externe n’est nécessaire.</p>
+          <div id="currentStageCard" class="stage-card">
+            <strong id="currentStageLabel">Libre</strong>
+            <p id="currentStageDescription">Vous explorez les capsules sans séquence imposée.</p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="lessonCatalogSection" class="panel glassy">
-        <div class="section-head">
-          <h2>Ateliers</h2>
-          <p id="currentStageLabel" class="section-meta">Étape : découverte</p>
-        </div>
-        <p id="currentStageDescription" class="microcopy">Le parcours guidé débloque les ateliers dans l’ordre prévu pour chaque famille de techniques.</p>
-        <div id="lessonList" class="lesson-grid"></div>
-      </section>
+        <section id="pathwaySection" class="card hidden">
+          <div class="section-head section-head-tight">
+            <h2>Parcours</h2>
+          </div>
+          <div id="pathwayList" class="pathway-list"></div>
+        </section>
+      </aside>
 
-      <section id="lessonPlayer" class="panel glassy hidden">
-        <div class="section-head">
+      <section class="main-column">
+        <section class="hero-strip card">
           <div>
-            <p id="lessonMeta" class="section-meta"></p>
-            <h2 id="lessonTitle"></h2>
+            <p class="eyebrow">Parcours utilisateur recentré</p>
+            <h2>Surface principale dédiée à l’action</h2>
+            <p class="microcopy">Le gabarit reprend le principe de l’application source : l’écran principal reste concentré sur le stage, les parcours, la recherche et les capsules. Le suivi, les sessions de consolidation et la sauvegarde sont déplacés dans des fenêtres dédiées.</p>
           </div>
-          <div class="button-row">
+          <div class="hero-strip-side">
+            <div class="progress-wrap compact-progress">
+              <div class="progress-label">
+                <span>Progression niveau</span>
+                <span id="levelProgressText">0 / 100 XP</span>
+              </div>
+              <div class="progress-bar">
+                <div id="levelProgressBar" class="progress-fill"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="lessonCatalogSection" class="card">
+          <div class="section-head">
+            <h2>Capsules disponibles</h2>
+            <input id="searchInput" type="search" placeholder="Rechercher une capsule, un mot-clé ou un exercice" />
+          </div>
+          <div id="lessonList" class="lesson-grid"></div>
+        </section>
+
+        <section id="lessonPlayer" class="card hidden">
+          <div class="lesson-player-head">
+            <div>
+              <p id="lessonMeta" class="meta"></p>
+              <h2 id="lessonTitle">Titre de la capsule</h2>
+            </div>
             <button id="closeLessonBtn" class="secondary-btn">Fermer</button>
+          </div>
+
+          <div id="lessonContent" class="lesson-content"></div>
+
+          <div class="lesson-actions">
             <button id="completeLessonBtn">Valider la capsule</button>
           </div>
-        </div>
-        <div id="lessonContent"></div>
+        </section>
       </section>
+    </main>
+  </div>
 
-      <section class="dual-grid">
-        <section class="panel glassy">
+  <div id="profileModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+    <div class="modal-backdrop" data-close-modal="profile"></div>
+    <div class="modal-dialog modal-dialog-large">
+      <div class="modal-header">
+        <h2 id="profileModalTitle">Tableau de bord d’apprentissage</h2>
+        <button id="closeProfileModalBtn" class="secondary-btn modal-close" aria-label="Fermer">Fermer</button>
+      </div>
+
+      <div class="modal-body modal-grid">
+        <section class="modal-card">
+          <h3>Profil</h3>
+          <div class="stats-grid">
+            <div class="stat">
+              <span class="label">XP</span>
+              <strong id="xpValue">0</strong>
+            </div>
+            <div class="stat">
+              <span class="label">Niveau</span>
+              <strong id="levelValue">1</strong>
+            </div>
+            <div class="stat">
+              <span class="label">Série</span>
+              <strong id="streakValue">0</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="modal-card hero-card">
+          <div>
+            <h3 id="heroTitle">Votre tableau de bord</h3>
+            <p id="heroText">Choisissez un parcours ou explorez les capsules librement.</p>
+          </div>
+          <div class="hero-badges">
+            <span id="modeBadge" class="pill">Mode libre</span>
+            <span id="pathBadge" class="pill muted">Aucun parcours</span>
+          </div>
+        </section>
+
+        <section class="modal-card">
           <div class="section-head">
-            <h2>Révision espacée</h2>
-            <button id="startReviewBtn">Lancer</button>
+            <h3>Objectif du jour</h3>
+            <span id="dailyGoalText">1 capsule + 1 révision</span>
+          </div>
+          <div class="daily-grid">
+            <div class="daily-box">
+              <span>Capsules aujourd’hui</span>
+              <strong id="lessonsTodayValue">0</strong>
+            </div>
+            <div class="daily-box">
+              <span>Révisions aujourd’hui</span>
+              <strong id="reviewsTodayValue">0</strong>
+            </div>
+            <div class="daily-box">
+              <span>Exercices aujourd’hui</span>
+              <strong id="quizTodayValue">0</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="modal-card">
+          <div class="section-head">
+            <h3>Révision espacée</h3>
+            <button id="startReviewBtn">Lancer une révision</button>
           </div>
           <div id="reviewArea" class="session-box">
-            <p>Chaque point clé mémorable devient une carte à revoir. Le système reste volontairement simple pour démontrer le potentiel du produit final.</p>
+            <p>Les cartes à réviser apparaîtront ici. Elles sont générées automatiquement à partir des points clés des capsules validées.</p>
           </div>
         </section>
 
-        <section class="panel glassy">
+        <section class="modal-card">
           <div class="section-head">
-            <h2>Exercice rapide</h2>
-            <button id="startQuizBtn">Lancer</button>
+            <h3>Exercice rapide</h3>
+            <button id="startQuizBtn">Lancer un exercice</button>
           </div>
           <div id="quizArea" class="session-box">
-            <p>Le moteur tire un exercice dans le périmètre actif. Les types utilisés ici sont QCU, QCM, vrai/faux, texte court, appariement et remise en ordre.</p>
+            <p>Le moteur pioche un exercice dans le périmètre courant. Cette zone sert de consolidation sans surcharger l’écran principal.</p>
           </div>
         </section>
-      </section>
-    </section>
-  </main>
+      </div>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal-backdrop" data-close-modal="settings"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="settingsModalTitle">Réglages d’apprentissage</h2>
+        <button id="closeSettingsModalBtn" class="secondary-btn modal-close" aria-label="Fermer">Fermer</button>
+      </div>
+
+      <div class="modal-body">
+        <section class="modal-card">
+          <h3>Mode d’apprentissage</h3>
+          <div class="mode-switch">
+            <button id="freeModeBtn" class="mode-btn active">Exploration libre</button>
+            <button id="pathModeBtn" class="mode-btn">Parcours guidé</button>
+          </div>
+          <p class="small-text settings-note">Le mode choisi modifie la visibilité des parcours dans la colonne latérale et la logique de déverrouillage.</p>
+        </section>
+
+        <section class="modal-card">
+          <h3>Personnalisation du gabarit</h3>
+          <p class="small-text">Zone prévue pour ajouter ensuite des préférences de domaine, d’habillage visuel, de voix, de moteur audio, etc. Le principe de séparation par modal est déjà en place.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="saveModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle">
+    <div class="modal-backdrop" data-close-modal="save"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="saveModalTitle">Sauvegarde</h2>
+        <button id="closeSaveModalBtn" class="secondary-btn modal-close" aria-label="Fermer">Fermer</button>
+      </div>
+
+      <div class="modal-body">
+        <section class="modal-card">
+          <div class="stack-actions">
+            <button id="exportBtn">Exporter la progression</button>
+            <label class="file-label">
+              Importer une sauvegarde
+              <input id="importInput" type="file" accept="application/json" />
+            </label>
+            <button id="resetBtn" class="danger-btn">Réinitialiser</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="js/app.js"></script>
 </body>

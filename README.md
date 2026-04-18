@@ -1,81 +1,153 @@
-# Impro Lab
+# Microlearning Studio Template
 
-Ce dossier contient un POC complet de webapp statique construit à partir du gabarit multi-domaine, puis spécialisé sur les techniques méconnues et efficaces d’improvisation musicale.
+Ce gabarit est une webapp statique multi-domaine inspirée du principe de votre application initiale, mais généralisée pour des contenus autres que linguistiques.
 
-## Ce que montre ce prototype
+## Ce que contient le gabarit
 
-Le POC démontre qu’un même moteur peut devenir un produit fini crédible pour un domaine artistique très pratique.
+Le moteur est volontairement simple à maintenir. Il fonctionne sans backend et s'appuie sur des données JSON.
 
-Il comprend :
-
-- 4 parcours thématiques ;
-- 50 ateliers répartis sur 5 stages ;
-- un mode libre et un mode parcours guidé ;
-- une progression locale avec XP, niveau, série quotidienne et révision espacée ;
-- des exercices auto-corrigés de 6 types ;
-- un mini moteur de lecture de notes dans le navigateur ;
-- une structure 100 % statique adaptée à GitHub Pages.
-
-## Parcours inclus
-
-- Motifs et contraintes fertiles
-- Temps, silence et respiration
-- Couleur, tension et dehors-dedans
-- Narration, interaction et forme longue
-
-## Architecture
-
-- `index.html` : structure de l’interface.
-- `styles.css` : identité visuelle du POC.
-- `data/lessons.json` : 50 ateliers.
-- `data/pathways.json` : 4 parcours.
-- `js/midiEngine.js` : lecteur de séquences par synthèse simple.
+- `index.html` : structure globale de l'interface.
+- `styles.css` : feuille de style unique.
+- `js/app.js` : orchestration générale.
+- `js/state.js` : progression, XP, niveau, série, validation des capsules.
 - `js/exercises.js` : rendu et correction automatique des exercices.
-- `js/renderers.js` : affichage détaillé des capsules, y compris pratique et exemples jouables.
+- `js/review.js` : cartes de révision espacée.
+- `js/dataService.js` : chargement des contenus.
+- `js/storage.js` : sauvegarde locale et export/import.
+- `js/renderers.js` : affichage des parcours, capsules et détails.
+- `js/utils.js` : fonctions utilitaires.
+- `data/pathways.json` : parcours d'exemple.
+- `data/lessons.json` : capsules d'exemple.
 
-## Schéma utile pour adapter une capsule
+## Types d'exercices intégrés
 
-Chaque capsule suit ce modèle :
+Les six types pris en charge dans ce gabarit sont les suivants.
+
+- QCU : `single_choice`
+- QCM : `multiple_choice`
+- vrai/faux : `true_false`
+- texte court à réponse attendue : `short_text`
+- appariement : `match_pairs`
+- remise en ordre : `order_steps`
+
+Tous sont corrigés automatiquement côté navigateur.
+
+## Principe pédagogique généralisé
+
+Chaque capsule repose sur la même structure :
+
+1. un objectif,
+2. une situation ou un contexte,
+3. des points clés transformables en cartes de révision,
+4. des blocs explicatifs,
+5. un ou plusieurs exercices.
+
+Cette structure peut être transposée à de nombreux domaines, par exemple la conformité, la cybersécurité, la maintenance, le management, la qualité, la santé, la vente, la relation client, etc.
+
+## Adapter le gabarit à un autre domaine
+
+La première adaptation à réaliser se situe dans `data/lessons.json`.
+
+Chaque capsule suit ce schéma :
 
 ```json
 {
-  "id": "cellule-de-3-notes",
-  "title": "La cellule de trois notes",
-  "objective": "Fabriquer un discours cohérent à partir de seulement trois hauteurs.",
-  "practice": {
-    "duration": "6 à 10 minutes",
-    "setup": "Préparer le tempo et le repère sonore.",
-    "steps": ["Étape 1", "Étape 2", "Étape 3"],
-    "selfCheck": "Question d’auto-vérification"
-  },
-  "examples": [
-    { "title": "Exemple A", "tempo": 96, "notes": [{"note": "C4", "duration": 0.5}] }
-  ],
+  "id": "incident-reporting",
+  "title": "Signaler un incident utilement",
+  "type": "capsule",
+  "typeLabel": "Capsule méthode",
+  "description": "Résumé court visible dans le catalogue.",
+  "objective": "Compétence ciblée.",
+  "context": "Situation de départ ou cas métier.",
   "keyPoints": [
-    { "id": "kp1", "front": "Idée à mémoriser", "back": "Explication" }
+    {
+      "id": "kp1",
+      "front": "Point à mémoriser",
+      "back": "Explication ou bonne pratique."
+    }
   ],
   "explanations": [
-    { "title": "Pourquoi", "text": "Explication pédagogique" }
+    {
+      "title": "Commentaire pédagogique",
+      "text": "Développement explicatif."
+    }
   ],
-  "exercises": []
+  "exercises": [],
+  "pathways": [
+    { "id": "onboarding", "order": 1, "stage": "decouverte" }
+  ]
 }
 ```
 
-## Déploiement GitHub Pages
+## Exemples de réemploi
 
-1. Créez un dépôt GitHub.
-2. Déposez le contenu de ce dossier à la racine du dépôt.
-3. Activez GitHub Pages sur la branche voulue.
-4. Servez le site depuis la racine ou le dossier principal du dépôt.
+### Domaine réglementaire
 
-Aucune étape serveur n’est nécessaire.
+Les points clés peuvent devenir : obligation, condition, exception, risque, justificatif.
 
-## Remarques sur le lecteur de notes
+Les exercices peuvent vérifier :
 
-Le module `js/midiEngine.js` ne s’appuie pas sur Web MIDI, car ce protocole suppose souvent un matériel ou un contexte plus spécifique. Le POC utilise à la place une synthèse locale légère par Web Audio. Pour un produit ultérieur, il serait possible d’ajouter :
+- le bon choix d'une règle applicable,
+- l'identification d'une non-conformité,
+- la chronologie d'une procédure,
+- l'association entre situation et document attendu.
 
-- export de vrais fichiers MIDI ;
-- import de patterns ;
-- choix d’instrument ;
-- exercices d’écoute plus avancés ;
-- boucles, accompagnements et drones.
+### Domaine managérial
+
+Les points clés peuvent devenir : posture, formulation, erreur fréquente, action recommandée.
+
+Les exercices peuvent vérifier :
+
+- le bon réflexe de communication,
+- le repérage d'un biais de management,
+- l'ordre des étapes d'un entretien,
+- le choix d'une réponse adaptée à une situation.
+
+### Domaine technique
+
+Les points clés peuvent devenir : symptôme, cause probable, contrôle à effectuer, action corrective.
+
+Les exercices peuvent vérifier :
+
+- l'association entre panne et diagnostic,
+- la remise en ordre d'une intervention,
+- la bonne lecture d'un signal,
+- le choix de l'action la plus sûre.
+
+## Limites actuelles du gabarit
+
+Le gabarit est immédiatement exploitable, mais plusieurs améliorations restent possibles.
+
+- Ajouter une évaluation de fin de capsule avec score récapitulatif.
+- Ajouter un algorithme de révision espacée plus fin.
+- Gérer des réponses semi-ouvertes avec expressions régulières ou variantes pondérées.
+- Ajouter des médias par capsule : image, audio, vidéo courte, schéma.
+- Ajouter des gabarits visuels différents selon le type de capsule.
+
+## Mise en route
+
+Ouvrez `index.html` dans un serveur local statique.
+
+Exemples simples :
+
+- VS Code avec Live Server
+- `python -m http.server`
+- n'importe quel hébergement statique
+
+Le service worker ne fonctionnera correctement qu'en contexte de serveur local ou distant.
+
+## Intention du gabarit
+
+Le code est commenté pour servir de base de production et de support de compréhension. Chaque module contient des indications de personnalisation et le jeu de données fourni joue le rôle d'exemple immédiatement visible.
+
+
+## Évolution UX intégrée
+
+Cette version du gabarit réintroduit le principe d'organisation issu de l'application source :
+- une barre haute avec accès rapide par icônes ;
+- une surface principale réservée au parcours et aux capsules ;
+- un tableau de bord en modal pour le suivi, la révision et l'exercice rapide ;
+- une modal de réglages pour le mode d'apprentissage et les options futures ;
+- une modal de sauvegarde pour export, import et réinitialisation.
+
+L'objectif est de limiter l'effet "tout est étalé" et de rendre le parcours utilisateur plus lisible sans perdre les fonctions du gabarit multi-domaine.
