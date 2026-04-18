@@ -1,14 +1,36 @@
 {
   "pathways": [
     {
-      "id": "onboarding",
-      "title": "Onboarding métier",
-      "description": "Exemple de parcours orienté prise en main rapide d'un nouveau domaine. Remplacez-le par votre propre logique de montée en compétence."
+      "id": "motifs-constraints",
+      "title": "Motifs et contraintes fertiles",
+      "description": "Créer du matériau fort à partir de limitations volontaires, de cellules courtes et de transformations progressives.",
+      "accent": "copper",
+      "hero": "Transformez peu de matière en discours fort.",
+      "coverPrompt": "Créer du matériau fort à partir de limitations volontaires, de cellules courtes et de transformations progressives."
     },
     {
-      "id": "risk-prevention",
-      "title": "Prévention des risques",
-      "description": "Exemple de parcours centré sur l'identification des signaux faibles et les bonnes réactions."
+      "id": "time-space-breath",
+      "title": "Temps, silence et respiration",
+      "description": "Stabiliser la pulsation, jouer avec l’attente et construire des phrases qui respirent vraiment.",
+      "accent": "indigo",
+      "hero": "Faites respirer le temps, le silence et la pulsation.",
+      "coverPrompt": "Stabiliser la pulsation, jouer avec l’attente et construire des phrases qui respirent vraiment."
+    },
+    {
+      "id": "harmony-color",
+      "title": "Couleur, tension et dehors-dedans",
+      "description": "Élargir le vocabulaire harmonique avec des procédés peu enseignés mais très efficaces sur instrument.",
+      "accent": "emerald",
+      "hero": "Travaillez tension, couleur et circulation dedans-dehors.",
+      "coverPrompt": "Élargir le vocabulaire harmonique avec des procédés peu enseignés mais très efficaces sur instrument."
+    },
+    {
+      "id": "narrative-interaction",
+      "title": "Narration, interaction et forme longue",
+      "description": "Transformer une improvisation en récit, en dialogue et en architecture plutôt qu’en suite d’idées isolées.",
+      "accent": "rose",
+      "hero": "Construisez une histoire musicale et dialoguez avec le contexte.",
+      "coverPrompt": "Transformer une improvisation en récit, en dialogue et en architecture plutôt qu’en suite d’idées isolées."
     }
   ]
 }
