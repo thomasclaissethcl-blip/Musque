@@ -1,3 +1,10 @@
+/**
+ * Fonctions utilitaires volontairement regroupées ici.
+ *
+ * Exemple d'adaptation : si votre domaine exige une correction plus fine
+ * du texte libre, vous pouvez enrichir normalizeText pour gérer des variantes,
+ * ponctuations spécifiques, ou même une logique par expressions régulières.
+ */
 export function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -15,7 +22,7 @@ export function normalizeText(value = '') {
   return value
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9\s-]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -40,7 +47,6 @@ export function formatStage(stage) {
     apprentissage: 'Apprentissage',
     approfondissement: 'Approfondissement',
     maitrise: 'Maîtrise',
-    virtuosite: 'Virtuosité',
   };
   return labels[stage] || stage;
 }

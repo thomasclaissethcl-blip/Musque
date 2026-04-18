@@ -1,14 +1,10 @@
 import { formatStage } from './utils.js';
-import { renderExercise } from './exercises.js';
-import { attachSequencePlayers } from './midiEngine.js';
 
 /**
  * Fonctions d'affichage.
  *
- * Dans ce POC, l'affichage a été enrichi pour montrer un produit presque fini :
- * - consigne de pratique à réaliser sur l'instrument ;
- * - lecteur de séquences ;
- * - exercices visibles aussi directement dans la capsule.
+ * Elles restent séparées de la logique métier pour simplifier l'adaptation :
+ * vous pouvez refaire l'interface sans toucher au calcul de progression ni au moteur d'exercices.
  */
 export function renderPathways(pathways, state, mountNode, onSelect) {
   mountNode.innerHTML = '';
@@ -16,7 +12,7 @@ export function renderPathways(pathways, state, mountNode, onSelect) {
     const isActive = state.selectedPathway === pathway.id;
     const progress = state.pathwayProgress[pathway.id] || { completedLessonIds: [] };
     const card = document.createElement('article');
-    card.className = `pathway-card ${isActive ? 'active-card' : ''}`;
+    card.className = 'pathway-card';
     card.innerHTML = `
       <h3>${pathway.title}</h3>
       <p>${pathway.description}</p>
@@ -63,43 +59,8 @@ export function renderLessonDetail(lesson, mountNode) {
   if (lesson.context) {
     const context = document.createElement('div');
     context.className = 'lesson-block';
-    context.innerHTML = `<h3>Situation de travail</h3><p>${lesson.context}</p>`;
+    context.innerHTML = `<h3>Situation</h3><p>${lesson.context}</p>`;
     mountNode.appendChild(context);
-  }
-
-  if (lesson.practice) {
-    const practice = document.createElement('div');
-    practice.className = 'lesson-block';
-    practice.innerHTML = `
-      <h3>Pratique instrumentale</h3>
-      <p><strong>Durée conseillée :</strong> ${lesson.practice.duration}</p>
-      <p>${lesson.practice.setup}</p>
-      <ol>${lesson.practice.steps.map((step) => `<li>${step}</li>`).join('')}</ol>
-      <p><strong>Auto-vérification :</strong> ${lesson.practice.selfCheck}</p>
-    `;
-    mountNode.appendChild(practice);
-  }
-
-  if (lesson.examples?.length) {
-    const examples = document.createElement('div');
-    examples.className = 'lesson-block';
-    examples.innerHTML = '<h3>Exemples jouables</h3>';
-    const grid = document.createElement('div');
-    grid.className = 'example-grid';
-    lesson.examples.forEach((example) => {
-      const card = document.createElement('div');
-      card.className = 'example-card';
-      const payload = JSON.stringify(example).replace(/"/g, '&quot;');
-      card.innerHTML = `
-        <h4>${example.title}</h4>
-        <p>${example.description}</p>
-        <p class="microcopy">Tempo : ${example.tempo} BPM · Notes : ${(example.notes || []).map((n) => n.note).join(' · ')}</p>
-        <button class="player-button" data-sequence-json="${payload}">Jouer l’exemple</button>
-      `;
-      grid.appendChild(card);
-    });
-    examples.appendChild(grid);
-    mountNode.appendChild(examples);
   }
 
   const keyPoints = document.createElement('div');
@@ -123,24 +84,13 @@ export function renderLessonDetail(lesson, mountNode) {
     mountNode.appendChild(section);
   });
 
-  const inlineExercises = document.createElement('div');
-  inlineExercises.className = 'lesson-block';
-  inlineExercises.innerHTML = `
-    <h3>Exercices de la capsule</h3>
-    <p>Après avoir joué la consigne sur votre instrument, utilisez ces exercices pour verbaliser ce que vous venez de travailler. Ils sont aussi mobilisables dans le mode « Exercice rapide ».</p>
+  const exerciseOverview = document.createElement('div');
+  exerciseOverview.className = 'lesson-block';
+  exerciseOverview.innerHTML = `
+    <h3>Exercices proposés</h3>
+    <p>Cette capsule contient ${lesson.exercises.length} exercice(s) auto-corrigé(s). Ils seront disponibles dans l'exercice rapide, et vous pouvez aussi prévoir un mode "évaluation de fin de capsule" si vous souhaitez l'ajouter.</p>
   `;
-  const container = document.createElement('div');
-  container.className = 'inline-exercises';
-  lesson.exercises.forEach((exercise) => {
-    const card = document.createElement('div');
-    card.className = 'exercise-mini-card';
-    renderExercise({ ...exercise, lessonTitle: lesson.title }, card);
-    container.appendChild(card);
-  });
-  inlineExercises.appendChild(container);
-  mountNode.appendChild(inlineExercises);
-
-  attachSequencePlayers(mountNode);
+  mountNode.appendChild(exerciseOverview);
 }
 
 export function updateStageInfo(state, lessons, stageLabelEl, stageDescriptionEl) {
@@ -154,5 +104,5 @@ export function updateStageInfo(state, lessons, stageLabelEl, stageDescriptionEl
   const nextLesson = scoped.find((lesson) => !lesson.locked && !lesson.completed);
   const stage = nextLesson?.currentStage || 'decouverte';
   stageLabelEl.textContent = `Étape : ${formatStage(stage)}`;
-  stageDescriptionEl.textContent = 'En parcours guidé, les ateliers se débloquent dans l’ordre prévu pour la montée en compétence.';
+  stageDescriptionEl.textContent = 'En parcours guidé, les capsules se débloquent dans l’ordre prévu pour le domaine.';
 }
