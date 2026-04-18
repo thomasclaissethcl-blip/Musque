@@ -23,7 +23,7 @@ export function pickExercisePool(lessons, state) {
   return shuffle(scopedLessons.flatMap((lesson) => lesson.exercises.map((exercise) => ({ ...exercise, lessonId: lesson.id, lessonTitle: lesson.title }))));
 }
 
-export function renderExercise(exercise, mountNode) {
+export function renderExercise(exercise, mountNode, onEvaluated = null) {
   mountNode.innerHTML = '';
 
   const wrapper = document.createElement('div');
@@ -74,6 +74,7 @@ export function renderExercise(exercise, mountNode) {
     feedback.className = `feedback-box ${result.correct ? 'success' : 'error'}`;
     feedback.innerHTML = `<strong>${result.correct ? 'Réponse correcte' : 'Réponse à revoir'}</strong><p>${result.feedback}</p>`;
     form.dataset.lastResult = result.correct ? 'success' : 'error';
+    if (typeof onEvaluated === 'function') onEvaluated(result);
   });
 
   mountNode.append(wrapper, form, feedback);

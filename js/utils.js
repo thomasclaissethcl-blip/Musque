@@ -47,6 +47,7 @@ export function formatStage(stage) {
     apprentissage: 'Apprentissage',
     approfondissement: 'Approfondissement',
     maitrise: 'Maîtrise',
+    virtuosite: 'Virtuosité',
   };
   return labels[stage] || stage;
 }

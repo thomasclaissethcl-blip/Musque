@@ -1,19 +1,18 @@
+
 /**
- * Paramètres principaux du gabarit.
+ * Paramètres principaux d'Impro Lab.
  *
- * Adaptez surtout :
- * - appTitle et hero messages
- * - storageKey pour éviter les collisions avec un autre projet
- * - barème XP si vous voulez une progression plus lente ou plus rapide
+ * Le projet reste 100 % statique.
+ * La progression se sauvegarde dans le navigateur et peut être exportée en JSON.
  */
 export const CONFIG = {
-  storageKey: 'microlearning-studio-template-v1',
-  appTitle: 'Microlearning Studio',
+  storageKey: 'impro-lab-prod',
+  appTitle: 'Impro Lab',
   xp: {
-    lessonCompletion: 20,
+    lessonCompletion: 30,
     exerciseSuccess: 10,
     reviewSuccess: 5,
-    levelStep: 100,
+    levelStep: 120,
   },
   review: {
     initialIntervalDays: 1,

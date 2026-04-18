@@ -1,24 +1,34 @@
 import { CONFIG } from './config.js';
 import { loadData } from './dataService.js';
-import { renderExercise, pickExercisePool } from './exercises.js';
-import { renderLessonDetail, renderLessonList, renderPathways, updateStageInfo } from './renderers.js';
-import { getDueReviewCards, scoreReviewCard, seedReviewCardsFromLesson } from './review.js';
-import { awardXP, completeLesson, decorateLessons, hydratePathwayProgress, refreshDailyProgress } from './state.js';
-import { exportState, importState, loadState, saveState, createDefaultState } from './storage.js';
-import { clamp, uniqueById } from './utils.js';
+import { exportState, importState, saveState, loadState, createDefaultState } from './storage.js';
+import { hydratePathwayProgress, refreshDailyProgress, decorateLessons, completeLesson } from './state.js';
+import { renderPathways, renderLessonList, renderLessonDetail, renderPathwayShowcase, updateStageInfo, renderContinueCard } from './renderers.js';
+import { seedReviewCardsFromLesson, getDueReviewCards, scoreReviewCard } from './review.js';
+import { pickExercisePool, renderExercise } from './exercises.js';
+import { clamp } from './utils.js';
 
-let state = loadState();
+let state = loadState(CONFIG.storageKey) || createDefaultState();
 let pathways = [];
 let lessons = [];
 let currentLesson = null;
 let exercisePool = [];
+let currentView = 'home';
 
 const els = {
+  homeViewBtn: document.getElementById('homeViewBtn'),
+  exploreViewBtn: document.getElementById('exploreViewBtn'),
+  homeView: document.getElementById('homeView'),
+  exploreView: document.getElementById('exploreView'),
+  continueBtn: document.getElementById('continueBtn'),
+  goExploreBtn: document.getElementById('goExploreBtn'),
+  continueTitle: document.getElementById('continueTitle'),
+  continueText: document.getElementById('continueText'),
+  continueWorkshopCard: document.getElementById('continueWorkshopCard'),
   xpValue: document.getElementById('xpValue'),
   levelValue: document.getElementById('levelValue'),
   streakValue: document.getElementById('streakValue'),
-  levelProgressText: document.getElementById('levelProgressText'),
   levelProgressBar: document.getElementById('levelProgressBar'),
+  levelProgressText: document.getElementById('levelProgressText'),
   freeModeBtn: document.getElementById('freeModeBtn'),
   pathModeBtn: document.getElementById('pathModeBtn'),
   modeBadge: document.getElementById('modeBadge'),
@@ -28,16 +38,11 @@ const els = {
   dailyGoalText: document.getElementById('dailyGoalText'),
   searchInput: document.getElementById('searchInput'),
   pathwayList: document.getElementById('pathwayList'),
-  pathwaySection: document.getElementById('pathwaySection'),
+  pathwayShowcase: document.getElementById('pathwayShowcase'),
   pathwayInlineBadge: document.getElementById('pathwayInlineBadge'),
   lessonList: document.getElementById('lessonList'),
   lessonCatalogSection: document.getElementById('lessonCatalogSection'),
   lessonPlayer: document.getElementById('lessonPlayer'),
-  lessonMeta: document.getElementById('lessonMeta'),
-  lessonTitle: document.getElementById('lessonTitle'),
-  lessonContent: document.getElementById('lessonContent'),
-  closeLessonBtn: document.getElementById('closeLessonBtn'),
-  completeLessonBtn: document.getElementById('completeLessonBtn'),
   currentStageLabel: document.getElementById('currentStageLabel'),
   currentStageDescription: document.getElementById('currentStageDescription'),
   reviewArea: document.getElementById('reviewArea'),
@@ -50,6 +55,9 @@ const els = {
   lessonsTodayValue: document.getElementById('lessonsTodayValue'),
   reviewsTodayValue: document.getElementById('reviewsTodayValue'),
   quizTodayValue: document.getElementById('quizTodayValue'),
+  lessonsTodayDashboard: document.getElementById('lessonsTodayDashboard'),
+  reviewsTodayDashboard: document.getElementById('reviewsTodayDashboard'),
+  quizTodayDashboard: document.getElementById('quizTodayDashboard'),
   profileModalBtn: document.getElementById('profileModalBtn'),
   settingsModalBtn: document.getElementById('settingsModalBtn'),
   saveModalBtn: document.getElementById('saveModalBtn'),
@@ -59,6 +67,8 @@ const els = {
   closeProfileModalBtn: document.getElementById('closeProfileModalBtn'),
   closeSettingsModalBtn: document.getElementById('closeSettingsModalBtn'),
   closeSaveModalBtn: document.getElementById('closeSaveModalBtn'),
+  reviewShortcutBtn: document.getElementById('reviewShortcutBtn'),
+  quizShortcutBtn: document.getElementById('quizShortcutBtn'),
 };
 
 document.addEventListener('DOMContentLoaded', init);
@@ -67,11 +77,8 @@ async function init() {
   const data = await loadData();
   pathways = data.pathways;
   lessons = data.lessons;
-
-  if (!state.selectedPathway && pathways.length) {
-    state.selectedPathway = pathways[0].id;
-  }
-
+  state.learningMode = state.learningMode || 'pathway';
+  if (!state.selectedPathway && pathways.length) state.selectedPathway = pathways[0].id;
   hydratePathwayProgress(state, pathways);
   bindEvents();
   registerSW();
@@ -79,70 +86,57 @@ async function init() {
 }
 
 function bindEvents() {
-  els.freeModeBtn.addEventListener('click', () => {
-    state.learningMode = 'free';
-    closeModal(els.settingsModal);
-    saveAndRefresh();
+  els.homeViewBtn.addEventListener('click', () => switchView('home'));
+  els.exploreViewBtn.addEventListener('click', () => switchView('explore'));
+  els.goExploreBtn.addEventListener('click', () => switchView('explore'));
+  els.continueBtn.addEventListener('click', () => {
+    const next = getNextRecommendedLesson();
+    if (next) openLesson(next.id);
+    else switchView('explore');
   });
-
-  els.pathModeBtn.addEventListener('click', () => {
-    state.learningMode = 'pathway';
-    if (!state.selectedPathway && pathways.length) state.selectedPathway = pathways[0].id;
-    closeModal(els.settingsModal);
-    saveAndRefresh();
-  });
-
+  els.freeModeBtn.addEventListener('click', () => { state.learningMode = 'free'; saveAndRefresh(); });
+  els.pathModeBtn.addEventListener('click', () => { state.learningMode = 'pathway'; if (!state.selectedPathway && pathways.length) state.selectedPathway = pathways[0].id; saveAndRefresh(); });
   els.searchInput.addEventListener('input', renderCatalog);
-  els.closeLessonBtn.addEventListener('click', closeLesson);
-  els.completeLessonBtn.addEventListener('click', validateCurrentLesson);
   els.startReviewBtn.addEventListener('click', startReviewSession);
   els.startQuizBtn.addEventListener('click', startQuickExercise);
+  els.reviewShortcutBtn?.addEventListener('click', () => { openModal(els.profileModal); startReviewSession(); });
+  els.quizShortcutBtn?.addEventListener('click', () => { openModal(els.profileModal); startQuickExercise(); });
   els.exportBtn.addEventListener('click', () => exportState(state));
   els.importInput.addEventListener('change', handleImport);
-  els.resetBtn.addEventListener('click', () => {
-    state = createDefaultState();
-    hydratePathwayProgress(state, pathways);
-    state.selectedPathway = pathways[0]?.id || null;
-    saveAndRefresh();
-  });
-
+  els.resetBtn.addEventListener('click', () => { state = createDefaultState(); state.learningMode = 'pathway'; hydratePathwayProgress(state, pathways); state.selectedPathway = pathways[0]?.id || null; saveAndRefresh(); });
   els.profileModalBtn?.addEventListener('click', () => openModal(els.profileModal));
   els.settingsModalBtn?.addEventListener('click', () => openModal(els.settingsModal));
   els.saveModalBtn?.addEventListener('click', () => openModal(els.saveModal));
   els.closeProfileModalBtn?.addEventListener('click', () => closeModal(els.profileModal));
   els.closeSettingsModalBtn?.addEventListener('click', () => closeModal(els.settingsModal));
   els.closeSaveModalBtn?.addEventListener('click', () => closeModal(els.saveModal));
+  document.addEventListener('click', (event) => {
+    if (event.target.matches("[data-close-modal='profile']")) closeModal(els.profileModal);
+    if (event.target.matches("[data-close-modal='settings']")) closeModal(els.settingsModal);
+    if (event.target.matches("[data-close-modal='save']")) closeModal(els.saveModal);
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      closeModal(els.profileModal);
-      closeModal(els.settingsModal);
-      closeModal(els.saveModal);
+    const lessonOpen = event.target.closest('[data-open-lesson]');
+    if (lessonOpen) openLesson(lessonOpen.dataset.openLesson);
+    const closeBtn = event.target.closest('[data-close-workshop]');
+    if (closeBtn) closeLesson();
+    const completeBtn = event.target.closest('[data-complete-workshop]');
+    if (completeBtn) validateCurrentLesson();
+    const understandToggle = event.target.closest('[data-toggle-understand]');
+    if (understandToggle) {
+      const section = document.getElementById('understandSection');
+      section?.classList.toggle('collapsed');
+      understandToggle.textContent = section?.classList.contains('collapsed') ? 'Déplier comprendre' : 'Replier comprendre';
     }
   });
-
-  els.profileModal?.addEventListener('click', (event) => {
-    if (event.target.matches("[data-close-modal='profile']")) closeModal(els.profileModal);
-  });
-  els.settingsModal?.addEventListener('click', (event) => {
-    if (event.target.matches("[data-close-modal='settings']")) closeModal(els.settingsModal);
-  });
-  els.saveModal?.addEventListener('click', (event) => {
-    if (event.target.matches("[data-close-modal='save']")) closeModal(els.saveModal);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeModal(els.profileModal); closeModal(els.settingsModal); closeModal(els.saveModal);
+    }
   });
 }
 
-function openModal(el) {
-  if (!el) return;
-  el.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal(el) {
-  if (!el) return;
-  el.classList.add('hidden');
-  document.body.style.overflow = '';
-}
+function openModal(el) { if (!el) return; el.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+function closeModal(el) { if (!el) return; el.classList.add('hidden'); document.body.style.overflow = ''; }
 
 function refresh() {
   refreshDailyProgress(state);
@@ -150,47 +144,54 @@ function refresh() {
   updateSummary();
   renderPathwayPanel();
   renderCatalog();
-  updateMainNavigationState();
+  renderShowcase();
+  renderContinueArea();
   updateStageInfo(state, decorateLessons(lessons, state), els.currentStageLabel, els.currentStageDescription);
   exercisePool = pickExercisePool(lessons, state);
-  saveState(state);
+  saveState(state, CONFIG.storageKey);
 }
 
-function saveAndRefresh() {
-  saveState(state);
-  refresh();
+function saveAndRefresh() { saveState(state, CONFIG.storageKey); refresh(); }
+
+function switchView(viewName) {
+  currentView = viewName;
+  els.homeView.classList.toggle('hidden', viewName !== 'home');
+  els.exploreView.classList.toggle('hidden', viewName !== 'explore');
+  els.homeViewBtn.classList.toggle('active', viewName === 'home');
+  els.exploreViewBtn.classList.toggle('active', viewName === 'explore');
+  if (viewName === 'explore') els.lessonPlayer.classList.add('hidden');
 }
 
 function updateSummary() {
   els.xpValue.textContent = state.profile.xp;
   els.levelValue.textContent = state.profile.level;
   els.streakValue.textContent = state.profile.streak;
-  els.lessonsTodayValue.textContent = state.dailyProgress.lessonsCompletedToday;
-  els.reviewsTodayValue.textContent = state.dailyProgress.reviewDoneToday;
-  els.quizTodayValue.textContent = state.dailyProgress.quizDoneToday;
-
+  [els.lessonsTodayValue, els.lessonsTodayDashboard].forEach(el => el.textContent = state.dailyProgress.lessonsCompletedToday);
+  [els.reviewsTodayValue, els.reviewsTodayDashboard].forEach(el => el.textContent = state.dailyProgress.reviewDoneToday);
+  [els.quizTodayValue, els.quizTodayDashboard].forEach(el => el.textContent = state.dailyProgress.quizDoneToday);
   const progressInLevel = state.profile.xp % CONFIG.xp.levelStep;
   const percent = clamp((progressInLevel / CONFIG.xp.levelStep) * 100, 0, 100);
   els.levelProgressBar.style.width = `${percent}%`;
   els.levelProgressText.textContent = `${progressInLevel} / ${CONFIG.xp.levelStep} XP vers le niveau suivant`;
-  els.modeBadge.textContent = `Mode ${state.learningMode === 'free' ? 'libre' : 'parcours'}`;
-
-  const selectedPath = pathways.find((pathway) => pathway.id === state.selectedPathway);
-  els.pathBadge.textContent = selectedPath?.title || 'Aucun parcours';
-  els.heroTitle.textContent = state.learningMode === 'free' ? 'Exploration libre' : 'Parcours guidé';
-  els.heroText.textContent = state.learningMode === 'free'
-    ? 'L’écran principal affiche directement les capsules. Ouvrez la fenêtre de tableau de bord pour lancer une révision, un exercice rapide ou suivre votre activité.'
-    : 'Le gabarit recentre le parcours utilisateur : colonne latérale pour le stage et le choix du parcours, zone centrale pour les capsules, tableau de bord séparé pour les actions transverses.';
-  els.dailyGoalText.textContent = '1 capsule + 1 révision';
-
+  els.modeBadge.textContent = state.learningMode === 'free' ? 'Mode libre' : 'Mode parcours';
+  els.pathBadge.textContent = pathways.find((pathway) => pathway.id === state.selectedPathway)?.title || 'Aucun parcours';
+  els.heroTitle.textContent = 'Tableau de bord de pratique';
+  els.heroText.textContent = 'Revenez au prochain atelier conseillé, travaillez une carte de révision ou utilisez un test rapide pour ancrer ce que vous venez de jouer.';
   els.freeModeBtn.classList.toggle('active', state.learningMode === 'free');
   els.pathModeBtn.classList.toggle('active', state.learningMode === 'pathway');
+  els.pathwayInlineBadge.textContent = state.learningMode === 'pathway' ? 'Mode parcours' : 'Mode libre';
 }
 
-function updateMainNavigationState() {
-  const inPathwayMode = state.learningMode === 'pathway';
-  els.pathwaySection.classList.toggle('hidden', !inPathwayMode);
-  els.pathwayInlineBadge.textContent = inPathwayMode ? 'Mode parcours' : 'Mode libre';
+function renderShowcase() {
+  const enriched = pathways.map((pathway) => ({
+    ...pathway,
+    lessonCount: lessons.filter((lesson) => lesson.pathways?.some((path) => path.id === pathway.id)).length,
+  }));
+  renderPathwayShowcase(enriched, state, els.pathwayShowcase, (pathwayId) => {
+    state.selectedPathway = pathwayId;
+    state.learningMode = 'pathway';
+    saveAndRefresh();
+  });
 }
 
 function renderPathwayPanel() {
@@ -198,33 +199,18 @@ function renderPathwayPanel() {
     ...pathway,
     lessonCount: lessons.filter((lesson) => lesson.pathways?.some((path) => path.id === pathway.id)).length,
   }));
-
-  renderPathways(enriched, state, els.pathwayList, (pathwayId) => {
-    state.selectedPathway = pathwayId;
-    state.learningMode = 'pathway';
-    saveAndRefresh();
-  });
+  renderPathways(enriched, state, els.pathwayList, (pathwayId) => { state.selectedPathway = pathwayId; state.learningMode = 'pathway'; saveAndRefresh(); });
 }
 
 function getFilteredLessons() {
   const query = els.searchInput.value.trim().toLowerCase();
   const decorated = decorateLessons(lessons, state);
-
   const scoped = state.learningMode === 'pathway' && state.selectedPathway
     ? decorated.filter((lesson) => lesson.pathways?.some((path) => path.id === state.selectedPathway))
     : decorated;
-
   if (!query) return scoped;
-
   return scoped.filter((lesson) => {
-    const haystack = [
-      lesson.title,
-      lesson.description,
-      lesson.objective,
-      lesson.context,
-      ...(lesson.keyPoints || []).flatMap((point) => [point.front, point.back]),
-      ...(lesson.explanations || []).flatMap((block) => [block.title, block.text]),
-    ].join(' ').toLowerCase();
+    const haystack = [lesson.title, lesson.description, lesson.objective, lesson.context, lesson.sessionIntent, ...(lesson.keyPoints || []).flatMap((point) => [point.front, point.back]), ...(lesson.explanations || []).flatMap((block) => [block.title, block.text])].join(' ').toLowerCase();
     return haystack.includes(query);
   });
 }
@@ -234,23 +220,40 @@ function renderCatalog() {
   renderLessonList(visibleLessons, state, els.lessonList, openLesson);
 }
 
+function getNextRecommendedLesson() {
+  const decorated = decorateLessons(lessons, state);
+  const scoped = state.learningMode === 'pathway' && state.selectedPathway
+    ? decorated.filter((lesson) => lesson.pathways?.some((path) => path.id === state.selectedPathway))
+    : decorated;
+  return scoped.find((lesson) => !lesson.locked && !lesson.completed) || scoped.find((lesson) => !lesson.completed) || scoped[0] || null;
+}
+
+function renderContinueArea() {
+  const next = getNextRecommendedLesson();
+  if (!next) {
+    els.continueTitle.textContent = 'Parcours prêt';
+    els.continueText.textContent = 'Activez un parcours ou passez en exploration libre pour ouvrir un atelier.';
+    els.continueWorkshopCard.innerHTML = '<p class="small-text">Aucun atelier recommandé pour le moment.</p>';
+    return;
+  }
+  const pathwayInfo = next.pathways?.find((path) => path.id === state.selectedPathway) || next.pathways?.[0];
+  els.continueTitle.textContent = next.title;
+  els.continueText.textContent = `${pathways.find((pathway) => pathway.id === pathwayInfo?.id)?.title || 'Parcours'} · ${pathwayInfo?.stage || 'hors parcours'}`;
+  renderContinueCard(next, pathways, els.continueWorkshopCard);
+}
+
 function openLesson(lessonId) {
   currentLesson = lessons.find((lesson) => lesson.id === lessonId) || null;
   if (!currentLesson) return;
-
-  const pathwayInfo = currentLesson.pathways?.find((path) => path.id === state.selectedPathway);
-  els.lessonMeta.textContent = `${currentLesson.typeLabel || currentLesson.type} · ${pathwayInfo ? pathwayInfo.stage : 'hors parcours'}`;
-  els.lessonTitle.textContent = currentLesson.title;
-  renderLessonDetail(currentLesson, els.lessonContent);
+  switchView('explore');
+  renderLessonDetail(currentLesson, els.lessonPlayer, state, pathways);
   els.lessonPlayer.classList.remove('hidden');
-  els.lessonCatalogSection.classList.add('hidden');
   els.lessonPlayer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function closeLesson() {
   currentLesson = null;
   els.lessonPlayer.classList.add('hidden');
-  els.lessonCatalogSection.classList.remove('hidden');
   els.lessonCatalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -259,66 +262,48 @@ function validateCurrentLesson() {
   completeLesson(state, currentLesson);
   seedReviewCardsFromLesson(state, currentLesson);
   saveAndRefresh();
-  closeLesson();
+  renderLessonDetail(currentLesson, els.lessonPlayer, state, pathways);
 }
 
 function startReviewSession() {
-  const scopedLessonIds = state.learningMode === 'pathway' && state.selectedPathway
+  const selectedLessonIds = state.learningMode === 'pathway' && state.selectedPathway
     ? lessons.filter((lesson) => lesson.pathways?.some((path) => path.id === state.selectedPathway)).map((lesson) => lesson.id)
     : null;
-
-  const dueCards = getDueReviewCards(state, scopedLessonIds);
-  const card = dueCards[0];
-
-  if (!card) {
-    els.reviewArea.innerHTML = '<p>Aucune carte à revoir pour le moment. Validez quelques capsules pour alimenter la révision espacée.</p>';
+  const due = getDueReviewCards(state, selectedLessonIds);
+  if (!due.length) {
+    els.reviewArea.innerHTML = '<p>Aucune carte n’est due pour le moment. Validez un atelier ou revenez plus tard.</p>';
     return;
   }
-
+  const card = due[0];
   els.reviewArea.innerHTML = `
-    <p class="section-meta">Carte issue de ${card.lessonId}</p>
-    <h3>${card.prompt}</h3>
-    <details>
-      <summary>Afficher la réponse</summary>
-      <p>${card.answer}</p>
-    </details>
-    <div class="exercise-toolbar">
-      <button id="reviewHardBtn" class="secondary-btn">À revoir vite</button>
-      <button id="reviewEasyBtn">Je maîtrise</button>
+    <div class="review-card">
+      <p class="section-meta">Repère à réactiver</p>
+      <h4>${card.prompt}</h4>
+      <details><summary>Afficher le rappel</summary><p>${card.answer}</p></details>
+      <div class="review-actions">
+        <button data-review-score="hard">À revoir</button>
+        <button data-review-score="easy" class="secondary-btn">C’était fluide</button>
+      </div>
     </div>
   `;
-
-  document.getElementById('reviewHardBtn').addEventListener('click', () => scoreReview('hard', card.id));
-  document.getElementById('reviewEasyBtn').addEventListener('click', () => scoreReview('easy', card.id));
-}
-
-function scoreReview(quality, cardId) {
-  scoreReviewCard(state, cardId, quality);
-  state.dailyProgress.reviewDoneToday += 1;
-  awardXP(state, CONFIG.xp.reviewSuccess, 'Révision espacée');
-  saveAndRefresh();
-  startReviewSession();
+  els.reviewArea.querySelectorAll('[data-review-score]').forEach((btn) => btn.addEventListener('click', () => {
+    scoreReviewCard(state, card.id, btn.dataset.reviewScore);
+    state.dailyProgress.reviewDoneToday += 1;
+    saveAndRefresh();
+    startReviewSession();
+  }));
 }
 
 function startQuickExercise() {
-  exercisePool = uniqueById(exercisePool);
-  const exercise = exercisePool.shift();
-  if (!exercise) {
-    els.quizArea.innerHTML = '<p>Aucun exercice disponible. Ajoutez des exercices dans les fichiers de données ou changez de parcours.</p>';
+  if (!exercisePool.length) {
+    els.quizArea.innerHTML = '<p>Aucun exercice disponible.</p>';
     return;
   }
-
-  renderExercise(exercise, els.quizArea);
-  const form = els.quizArea.querySelector('form');
-  form?.addEventListener('submit', () => {
-    requestAnimationFrame(() => {
-      if (form.dataset.lastResult === 'success') {
-        state.dailyProgress.quizDoneToday += 1;
-        awardXP(state, CONFIG.xp.exerciseSuccess, `Exercice réussi : ${exercise.prompt}`);
-        saveAndRefresh();
-      }
-    });
-  }, { once: true });
+  const exercise = exercisePool[Math.floor(Math.random() * exercisePool.length)];
+  renderExercise(exercise, els.quizArea, () => {
+    state.dailyProgress.quizDoneToday += 1;
+    saveAndRefresh();
+  });
 }
 
 async function handleImport(event) {
@@ -328,17 +313,13 @@ async function handleImport(event) {
     state = await importState(file);
     hydratePathwayProgress(state, pathways);
     saveAndRefresh();
-    closeModal(els.saveModal);
   } catch (error) {
-    console.error(error);
-    alert('Impossible d’importer ce fichier.');
-  } finally {
-    event.target.value = '';
+    alert('Import impossible. Vérifiez le fichier JSON.');
   }
 }
 
 function registerSW() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
   }
 }
